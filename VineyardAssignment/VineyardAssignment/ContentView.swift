@@ -1,25 +1,52 @@
-//
-//  ContentView.swift
-//  VineyardAssignment
-//
-//  Created by Sankaet Cheemalamarri on 9/5/24.
-//
-
 import SwiftUI
 
 struct ContentView: View {
-    @Environment(ViewModel.self) private var viewModel
-    
+    @StateObject private var viewModel = TaskViewModel()
+    @State private var newTaskName: String = ""
+
     var body: some View {
-        NavigationStack {
-            List(viewModel.lists) { list in
-                // TODO: Use a NavigationLink to select a list.
+        NavigationView {
+            VStack {
+                HStack {
+                    TextField("Enter new task", text: $newTaskName)
+                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                        .padding()
+                    Button(action: {
+                        guard !newTaskName.isEmpty else { return }
+                        viewModel.addTask(name: newTaskName)
+                        newTaskName = ""
+                    }) {
+                        Image(systemName: "plus.circle.fill")
+                            .font(.largeTitle)
+                            .padding()
+                    }
+                }
+                .padding()
+
+                List {
+                    ForEach(viewModel.tasks) { task in
+                        HStack {
+                            Text(task.name)
+                            Spacer()
+                            Button(action: {
+                                viewModel.toggleCompletion(of: task)
+                            }) {
+                                Image(systemName: task.isCompleted ? "checkmark.circle.fill" : "circle")
+                                    .foregroundColor(task.isCompleted ? .green : .gray)
+                            }
+                        }
+                    }
+                    .onDelete(perform: viewModel.deleteTask) // Use without the $
+                }
+                .listStyle(PlainListStyle())
             }
-            .navigationTitle("Lists")
+            .navigationBarTitle("To-Do List")
         }
     }
 }
 
-#Preview {
-    ContentView()
+struct ContentView_Previews: PreviewProvider {
+    static var previews: some View {
+        ContentView()
+    }
 }

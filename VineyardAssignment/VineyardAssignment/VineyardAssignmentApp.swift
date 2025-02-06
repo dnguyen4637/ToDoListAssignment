@@ -9,12 +9,12 @@ import SwiftUI
 
 @main
 struct VineyardAssignmentApp: App {
-    @State private var viewModel = ViewModel()
+    @State private var viewModel = TaskViewModel()
     
     var body: some Scene {
         WindowGroup {
             ContentView()
-                .environment(viewModel)
+                
         }
     }
 }

@@ -1,33 +1,21 @@
-//
-//  ViewModel.swift
-//  VineyardAssignment
-//
-//  Created by Rahul on 9/5/24.
-//
+import Combine
+import Foundation
 
-import SwiftUI
+class TaskViewModel: ObservableObject {
+    @Published var tasks: [Task] = []
 
-@Observable
-class ViewModel {
-    var lists: [ItemList] = [
-        // Note: You could add some mock lists here to make testing easy.
-    ]
-    
-    init() {}
-    
-    // MARK: - User Intents
-    /// Creates a new empty ItemList with the given name.
-    func createList(name: String) {
-        // TODO: Complete this function.
+    func addTask(name: String) {
+        let newTask = Task(name: name)
+        tasks.append(newTask)
     }
-    
-    /// Adds an item with the given name to an ItemList.
-    func addItem(to list: ItemList, name: String) {
-        // TODO: Complete this function.
+
+    func toggleCompletion(of task: Task) {
+        if let index = tasks.firstIndex(where: { $0.id == task.id }) {
+            tasks[index].isCompleted.toggle()
+        }
     }
-    
-    /// Toggle an item as complete or incomplete.
-    func toggleItemAsCompleted(_ item: ItemList.Item, list: ItemList) {
-        // TODO: Complete this function.
+
+    func deleteTask(at offsets: IndexSet) {
+        tasks.remove(atOffsets: offsets)
     }
 }
